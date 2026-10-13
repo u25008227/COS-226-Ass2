@@ -2,8 +2,22 @@ import java.util.concurrent.locks.*;
 import  java.util.concurrent.atomic.*;
 
 
-public class BoundedQueue<T>
+public class BoundedQueue<T> implements MyQueue<T>
 {
+    public class Node
+    {
+        public T value;
+        public Node next;
+        public Node(T x)
+        {
+            value = x;
+            next = null;
+        }
+        
+    }
+    
+    
+    
     //locks for enquing and dequeing
     ReentrantLock enqLock;
     ReentrantLock deqLock;
@@ -16,16 +30,16 @@ public class BoundedQueue<T>
     AtomicInteger size;
 
     //Members
-    volatile Node<T> head;
-    volatile Node<T> tail;
+    Node head;
+    Node tail;
 
     int capacity;
 
-    //constructor?
+    //constructor
     public BoundedQueue(int _capacity)
     {
         this.capacity = _capacity;
-        head = new Node<>(null);
+        head = new Node(null);
         tail = head;
         size = new AtomicInteger(0);
         enqLock = new ReentrantLock();
@@ -44,7 +58,7 @@ public class BoundedQueue<T>
             {
                 notFull.await();
             }
-            Node<T> e = new Node<>(x);
+            Node e = new Node(x);
             tail.next = e;
             tail = e;
             if(size.getAndIncrement() == 0)
