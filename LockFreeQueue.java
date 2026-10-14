@@ -14,15 +14,6 @@ public class LockFreeQueue<T> implements MyQueue<T>
         }
     }
     
-    ReentrantLock enqLock;
-    ReentrantLock deqLock;
-
-    //conditions
-    Condition notEmpty;
-    Condition notFull;
-
-    //size
-    AtomicInteger size;
 
     //Members
     volatile AtomicReference<Node> head;
@@ -34,7 +25,7 @@ public class LockFreeQueue<T> implements MyQueue<T>
     {
         Node sentinel = new Node(null);
         head = new AtomicReference<>(sentinel);
-        tail = head;
+        tail = new AtomicReference<>(sentinel);
 
     }
 
